@@ -22,7 +22,7 @@ def awkward():
     Imports and returns ``awkward``.
     """
     try:
-        import awkward
+        import awkward._v2 as awkward
     except ModuleNotFoundError:
         raise ModuleNotFoundError(
             """install the 'awkward' package with:
@@ -33,14 +33,16 @@ Alternatively, you can use ``library="np"`` or globally set ``uproot.default_lib
 to output as NumPy arrays, rather than Awkward arrays.
 """
         )
-    if parse_version("1") < parse_version(awkward.__version__) < parse_version("2"):
-        return awkward
-    else:
-        raise ModuleNotFoundError(
-            "Uproot 4.x can only be used with Awkward 1.x; you have Awkward {}".format(
-                awkward.__version__
-            )
-        )
+    return awkward
+    # Temporary removal, awkard._v2 has __no version__
+    # if parse_version("2") < parse_version(awkward.__version__) < parse_version("3"):
+    #     return awkward
+    # else:
+    #     raise ModuleNotFoundError(
+    #         "Uproot 4.x can only be used with Awkward 1.x; you have Awkward {}".format(
+    #             awkward.__version__
+    #         )
+    #     )
 
 
 def pandas():

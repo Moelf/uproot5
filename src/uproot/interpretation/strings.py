@@ -218,9 +218,9 @@ class AsStrings(uproot.interpretation.Interpretation):
                 self._threadlocal.forth_vm.reset()
 
                 return awkward.Array(
-                    awkward.layout.ListOffsetArray64(
-                        awkward.layout.Index64(offsets),
-                        awkward.layout.NumpyArray(
+                    awkward.contents.ListOffsetArray(
+                        awkward.index.Index64(offsets),
+                        awkward.contents.NumpyArray(
                             data, parameters={"__array__": "char"}
                         ),
                         parameters={"__array__": "string"},

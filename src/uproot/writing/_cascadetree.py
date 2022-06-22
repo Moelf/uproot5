@@ -702,39 +702,18 @@ class Tree:
                         f"a jagged array was provided (possibly as an iterable), but 'awkward' cannot be imported: {branch_name}: {branch_array!r}"
                     ) from err
                 layout = branch_array.layout
-                while not isinstance(
-                    layout,
-                    (
-                        awkward.layout.ListOffsetArray32,
-                        awkward.layout.ListOffsetArrayU32,
-                        awkward.layout.ListOffsetArray64,
-                    ),
-                ):
+                while not isinstance(layout, awkward.contents.ListOffsetArray):
                     if isinstance(layout, awkward.partition.PartitionedArray):
                         layout = awkward.concatenate(layout.partitions, highlevel=False)
 
-                    elif isinstance(
-                        layout,
-                        (
-                            awkward.layout.IndexedArray32,
-                            awkward.layout.IndexedArrayU32,
-                            awkward.layout.IndexedArray64,
-                        ),
-                    ):
+                    elif isinstance(layout, awkward.contents.IndexedArray):
                         layout = layout.project()
 
-                    elif isinstance(
-                        layout,
-                        (
-                            awkward.layout.ListArray32,
-                            awkward.layout.ListArrayU32,
-                            awkward.layout.ListArray64,
-                        ),
-                    ):
+                    elif isinstance(layout, awkward.contents.ListArray):
                         layout = layout.toListOffsetArray64(False)
 
-                    elif isinstance(layout, awkward.layout.VirtualArray):
-                        layout = layout.array
+                    # elif isinstance(layout, awkward.layout.VirtualArray):
+                    #     layout = layout.array
 
                     else:
                         raise AssertionError(
@@ -751,26 +730,19 @@ class Tree:
                     content = content[: offsets[-1]]
 
                 shape = [len(content)]
-                while not isinstance(content, awkward.layout.NumpyArray):
-                    if isinstance(
-                        content,
-                        (
-                            awkward.layout.IndexedArray32,
-                            awkward.layout.IndexedArrayU32,
-                            awkward.layout.IndexedArray64,
-                        ),
-                    ):
+                while not isinstance(content, awkward.contents.NumpyArray):
+                    if isinstance(content, awkward.contents.IndexedArray):
                         content = content.project()
 
-                    elif isinstance(content, awkward.layout.EmptyArray):
+                    elif isinstance(content, awkward.contents.EmptyArray):
                         content = content.toNumpyArray()
 
-                    elif isinstance(content, awkward.layout.RegularArray):
+                    elif isinstance(content, awkward.contents.RegularArray):
                         shape.append(content.size)
                         content = content.content
 
-                    elif isinstance(layout, awkward.layout.VirtualArray):
-                        content = content.array
+                    # elif isinstance(layout, awkward.contents.VirtualArray):
+                    #     content = content.array
 
                     else:
                         raise AssertionError(
