@@ -73,6 +73,96 @@ isort:skip_file
 """
 
 
+from uproot.pyroot import from_pyroot
+from uproot._util import no_filter
+from uproot.behavior import behavior_of
+from uproot.behaviors.TBranch import dask
+from uproot.behaviors.TBranch import lazy
+from uproot.behaviors.TBranch import concatenate
+from uproot.behaviors.TBranch import iterate
+from uproot.behaviors.TBranch import TBranch
+from uproot.behaviors.TTree import TTree
+from uproot.containers import AsMap
+from uproot.containers import AsSet
+from uproot.containers import AsVector
+from uproot.containers import AsRVec
+from uproot.containers import AsDynamic
+from uproot.containers import AsArray
+from uproot.containers import AsPointer
+from uproot.containers import AsString
+from uproot.interpretation.grouped import AsGrouped
+from uproot.interpretation.objects import AsStridedObjects
+from uproot.interpretation.objects import AsObjects
+from uproot.interpretation.strings import AsStrings
+from uproot.interpretation.jagged import AsJagged
+from uproot.interpretation.numerical import AsSTLBits
+from uproot.interpretation.numerical import AsFloat16
+from uproot.interpretation.numerical import AsDouble32
+from uproot.interpretation.numerical import AsDtypeInPlace
+from uproot.interpretation.numerical import AsDtype
+import uproot.interpretation.library
+import uproot.interpretation.identify
+import uproot.interpretation
+from uproot.containers import STLMap
+from uproot.containers import STLSet
+from uproot.containers import STLVector
+from uproot.models.TTree import num_entries
+import uproot.models.TMatrixT
+import uproot.models.TGraph
+import uproot.models.TH
+import uproot.models.RNTuple
+import uproot.models.TBasket
+import uproot.models.TLeaf
+import uproot.models.TBranch
+import uproot.models.TTree
+import uproot.models.TTable
+import uproot.models.TRef
+import uproot.models.TDatime
+import uproot.models.TAtt
+import uproot.models.TObjString
+import uproot.models.TClonesArray
+import uproot.models.TObjArray
+import uproot.models.THashList
+import uproot.models.TList
+import uproot.models.TNamed
+import uproot.models.TArray
+import uproot.models.TString
+import uproot.models.TObject
+from uproot.writing import to_writable
+from uproot.writing import WritableBranch
+from uproot.writing import WritableTree
+from uproot.writing import WritableDirectory
+from uproot.writing import WritableFile
+from uproot.writing import update
+from uproot.writing import recreate
+from uproot.writing import create
+from uproot.model import reset_classes
+from uproot.model import class_named
+from uproot.model import has_class_named
+from uproot.model import classname_encode
+from uproot.model import classname_decode
+from uproot.model import Model
+from uproot.exceptions import KeyInFileError
+from uproot.reading import ReadOnlyDirectory
+from uproot.reading import ReadOnlyFile
+from uproot.reading import open
+from uproot.compression import ZSTD
+from uproot.compression import LZ4
+from uproot.compression import LZMA
+from uproot.compression import ZLIB
+from uproot.deserialization import DeserializationError
+from uproot.source.futures import ThreadPoolExecutor
+from uproot.source.futures import TrivialExecutor
+from uproot.source.cursor import Cursor
+from uproot.source.object import ObjectSource
+from uproot.source.xrootd import MultithreadedXRootDSource
+from uproot.source.xrootd import XRootDSource
+from uproot.source.http import MultithreadedHTTPSource
+from uproot.source.http import HTTPSource
+from uproot.source.file import MultithreadedFileSource
+from uproot.source.file import MemmapSource
+from uproot.cache import LRUArrayCache
+from uproot.cache import LRUCache
 from uproot.version import __version__
 import uproot.const
 import uproot.extras
@@ -81,110 +171,8 @@ import uproot.dynamic
 classes = {}
 unknown_classes = {}
 
-from uproot.cache import LRUCache
-from uproot.cache import LRUArrayCache
-
-from uproot.source.file import MemmapSource
-from uproot.source.file import MultithreadedFileSource
-from uproot.source.http import HTTPSource
-from uproot.source.http import MultithreadedHTTPSource
-from uproot.source.xrootd import XRootDSource
-from uproot.source.xrootd import MultithreadedXRootDSource
-from uproot.source.object import ObjectSource
-from uproot.source.cursor import Cursor
-from uproot.source.futures import TrivialExecutor
-from uproot.source.futures import ThreadPoolExecutor
-from uproot.deserialization import DeserializationError
-
-from uproot.compression import ZLIB
-from uproot.compression import LZMA
-from uproot.compression import LZ4
-from uproot.compression import ZSTD
-
-from uproot.reading import open
-from uproot.reading import ReadOnlyFile
-from uproot.reading import ReadOnlyDirectory
-
-from uproot.exceptions import KeyInFileError
-
-from uproot.model import Model
-from uproot.model import classname_decode
-from uproot.model import classname_encode
-from uproot.model import has_class_named
-from uproot.model import class_named
-from uproot.model import reset_classes
-
-from uproot.writing import create
-from uproot.writing import recreate
-from uproot.writing import update
-from uproot.writing import WritableFile
-from uproot.writing import WritableDirectory
-from uproot.writing import WritableTree
-from uproot.writing import WritableBranch
-from uproot.writing import to_writable
-
-import uproot.models.TObject
-import uproot.models.TString
-import uproot.models.TArray
-import uproot.models.TNamed
-import uproot.models.TList
-import uproot.models.THashList
-import uproot.models.TObjArray
-import uproot.models.TClonesArray
-import uproot.models.TObjString
-import uproot.models.TAtt
-import uproot.models.TDatime
-import uproot.models.TRef
-
-import uproot.models.TTable
-import uproot.models.TTree
-import uproot.models.TBranch
-import uproot.models.TLeaf
-import uproot.models.TBasket
-import uproot.models.RNTuple
-import uproot.models.TH
-import uproot.models.TGraph
-import uproot.models.TMatrixT
-
-from uproot.models.TTree import num_entries
-
-from uproot.containers import STLVector
-from uproot.containers import STLSet
-from uproot.containers import STLMap
-
-import uproot.interpretation
-import uproot.interpretation.identify
-import uproot.interpretation.library
-from uproot.interpretation.numerical import AsDtype
-from uproot.interpretation.numerical import AsDtypeInPlace
-from uproot.interpretation.numerical import AsDouble32
-from uproot.interpretation.numerical import AsFloat16
-from uproot.interpretation.numerical import AsSTLBits
-from uproot.interpretation.jagged import AsJagged
-from uproot.interpretation.strings import AsStrings
-from uproot.interpretation.objects import AsObjects
-from uproot.interpretation.objects import AsStridedObjects
-from uproot.interpretation.grouped import AsGrouped
-from uproot.containers import AsString
-from uproot.containers import AsPointer
-from uproot.containers import AsArray
-from uproot.containers import AsDynamic
-from uproot.containers import AsRVec
-from uproot.containers import AsVector
-from uproot.containers import AsSet
-from uproot.containers import AsMap
 
 default_library = "ak"
 
-from uproot.behaviors.TTree import TTree
-from uproot.behaviors.TBranch import TBranch
-from uproot.behaviors.TBranch import iterate
-from uproot.behaviors.TBranch import concatenate
-from uproot.behaviors.TBranch import lazy
-from uproot.behaviors.TBranch import dask
 
-from uproot.behavior import behavior_of
-
-from uproot._util import no_filter
-
-from uproot.pyroot import from_pyroot
+# minor change to get PR num
