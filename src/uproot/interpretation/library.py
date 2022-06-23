@@ -622,8 +622,8 @@ in object {}""".format(
         elif how is None:
             if len(expression_context) == 0:
                 return awkward.Array(
-                    awkward.contents.RecordArray([], keys=[])
-                )  # PLEASE SEE: RECORD ARRAY API seems to have changed
+                    awkward.contents.RecordArray([], fields=[], length=0)
+                )
             else:
                 return awkward.Array(
                     {_rename(name, c): arrays[name] for name, c in expression_context}
@@ -661,8 +661,8 @@ in object {}""".format(
             if len(nonjagged) != 0:
                 if len(nonjagged) == 0:
                     out = awkward.Array(
-                        awkward.contents.RecordArray([], keys=[])
-                    )  # PLEASE SEE: RECORD ARRAY API seems to have changed
+                        awkward.contents.RecordArray([], fields=[], length=0)
+                    )
                 else:
                     out = awkward.Array(
                         {name: renamed_arrays[name] for name in nonjagged},
@@ -688,9 +688,7 @@ in object {}""".format(
                     common = f"jagged{number}"
                     if len(jagged) == 0:
                         subarray = awkward.Array(
-                            awkward.contents.RecordArray(
-                                [], keys=[]
-                            )  # PLEASE SEE: RECORD ARRAY API seems to have changed
+                            awkward.contents.RecordArray([], fields=[], length=0)
                         )
                     else:
                         subarray = awkward.zip(
@@ -700,9 +698,7 @@ in object {}""".format(
                     common = jagged[0][:cut].strip("_./")
                     if len(jagged) == 0:
                         subarray = awkward.Array(
-                            awkward.contents.RecordArray(
-                                [], keys=[]
-                            )  # PLEASE SEE: RECORD ARRAY API seems to have changed
+                            awkward.contents.RecordArray([], fields=[], length=0)
                         )
                     else:
                         subarray = awkward.zip(
