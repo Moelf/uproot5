@@ -242,7 +242,7 @@ def test_strided_awkward():
             == '2421 * TVector2["fX": float64, "fY": float64]'
         )
 
-        assert awkward.to_list(result["fX"][:10]) == [
+        assert awkward._v2.to_list(result["fX"][:10]) == [
             5.912771224975586,
             24.76520347595215,
             -25.78508758544922,
@@ -254,7 +254,7 @@ def test_strided_awkward():
             42.416194915771484,
             -1.9144694805145264,
         ]
-        assert awkward.to_list(result["fY"][:10]) == [
+        assert awkward._v2.to_list(result["fY"][:10]) == [
             2.5636332035064697,
             -16.349109649658203,
             16.237131118774414,
@@ -294,7 +294,7 @@ def test_jagged_awkward_1():
     ] as branch:
         assert branch.interpretation == AsJagged(AsDtype(">u8"), header_bytes=1)
         result = branch.array(library="ak", entry_stop=6)
-        assert awkward.to_list(result) == [
+        assert awkward._v2.to_list(result) == [
             [],
             [1],
             [2, 2],
@@ -311,7 +311,7 @@ def test_jagged_awkward_2():
     ] as branch:
         assert branch.interpretation == AsJagged(AsDtype(">f8"), header_bytes=10)
         result = branch.array(library="ak", entry_stop=6)
-        assert awkward.to_list(result) == [
+        assert awkward._v2.to_list(result) == [
             [],
             [1],
             [2, 2],
@@ -694,7 +694,7 @@ def test_jagged_awkward_3():
     with uproot.open(skhep_testdata.data_path("uproot-small-evnt-tree-fullsplit.root"))[
         "tree/evt/StlVecStr"
     ] as branch:
-        assert awkward.to_list(branch.array(library="ak")[:6, :3]) == [
+        assert awkward._v2.to_list(branch.array(library="ak")[:6, :3]) == [
             [],
             ["vec-001"],
             ["vec-002", "vec-002"],
@@ -709,7 +709,7 @@ def test_awkward_string():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["string"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["string"].array(library="ak")) == [
             "one",
             "two",
             "three",
@@ -723,7 +723,7 @@ def test_awkward_tstring():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["tstring"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["tstring"].array(library="ak")) == [
             "one",
             "two",
             "three",
@@ -737,7 +737,7 @@ def test_awkward_vector_int32():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["vector_int32"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["vector_int32"].array(library="ak")) == [
             [1],
             [1, 2],
             [1, 2, 3],
@@ -751,7 +751,7 @@ def test_awkward_vector_string():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["vector_string"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["vector_string"].array(library="ak")) == [
             ["one"],
             ["one", "two"],
             ["one", "two", "three"],
@@ -765,7 +765,7 @@ def test_awkward_vector_tstring():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["vector_tstring"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["vector_tstring"].array(library="ak")) == [
             ["one"],
             ["one", "two"],
             ["one", "two", "three"],
@@ -779,7 +779,7 @@ def test_awkward_vector_vector_int32():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["vector_vector_int32"].array(library="ak")) == [
+        assert awkward._v2.to_list(tree["vector_vector_int32"].array(library="ak")) == [
             [[1]],
             [[1], [1, 2]],
             [[1], [1, 2], [1, 2, 3]],
@@ -793,7 +793,9 @@ def test_awkward_vector_vector_string():
     with uproot.open(skhep_testdata.data_path("uproot-stl_containers.root"))[
         "tree"
     ] as tree:
-        assert awkward.to_list(tree["vector_vector_string"].array(library="ak")) == [
+        assert awkward._v2.to_list(
+            tree["vector_vector_string"].array(library="ak")
+        ) == [
             [["one"]],
             [["one"], ["one", "two"]],
             [["one"], ["one", "two"], ["one", "two", "three"]],
@@ -819,14 +821,14 @@ def test_awkward_map_int32_int16():
         "tree"
     ] as tree:
         keys, values = awkward.unzip(tree["map_int32_int16"].array(library="ak"))
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             [1],
             [1, 2],
             [1, 2, 3],
             [1, 2, 3, 4],
             [1, 2, 3, 4, 5],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [1],
             [1, 2],
             [1, 2, 3],
@@ -841,14 +843,14 @@ def test_awkward_map_int32_vector_int16():
         "tree"
     ] as tree:
         keys, values = awkward.unzip(tree["map_int32_vector_int16"].array(library="ak"))
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             [1],
             [1, 2],
             [1, 2, 3],
             [1, 2, 3, 4],
             [1, 2, 3, 4, 5],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [[1]],
             [[1], [1, 2]],
             [[1], [1, 2], [1, 2, 3]],
@@ -865,14 +867,14 @@ def test_awkward_map_int32_vector_string():
         keys, values = awkward.unzip(
             tree["map_int32_vector_string"].array(library="ak")
         )
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             [1],
             [1, 2],
             [1, 2, 3],
             [1, 2, 3, 4],
             [1, 2, 3, 4, 5],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [["one"]],
             [["one"], ["one", "two"]],
             [["one"], ["one", "two"], ["one", "two", "three"]],
@@ -898,14 +900,14 @@ def test_awkward_map_string_int16():
         "tree"
     ] as tree:
         keys, values = awkward.unzip(tree["map_string_int16"].array(library="ak"))
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             ["one"],
             ["one", "two"],
             ["one", "three", "two"],
             ["four", "one", "three", "two"],
             ["five", "four", "one", "three", "two"],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [1],
             [1, 2],
             [1, 3, 2],
@@ -922,14 +924,14 @@ def test_awkward_map_string_vector_string():
         keys, values = awkward.unzip(
             tree["map_string_vector_string"].array(library="ak")
         )
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             ["one"],
             ["one", "two"],
             ["one", "three", "two"],
             ["four", "one", "three", "two"],
             ["five", "four", "one", "three", "two"],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [["one"]],
             [["one"], ["one", "two"]],
             [["one"], ["one", "two", "three"], ["one", "two"]],
@@ -957,14 +959,14 @@ def test_awkward_map_int32_vector_vector_int16():
         keys, values = awkward.unzip(
             tree["map_int32_vector_vector_int16"].array(library="ak")
         )
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             [1],
             [1, 2],
             [1, 2, 3],
             [1, 2, 3, 4],
             [1, 2, 3, 4, 5],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             [[[1]]],
             [[[1]], [[1], [1, 2]]],
             [[[1]], [[1], [1, 2]], [[1], [1, 2], [1, 2, 3]]],
@@ -990,14 +992,14 @@ def test_awkward_map_string_string():
         "tree"
     ] as tree:
         keys, values = awkward.unzip(tree["map_string_string"].array(library="ak"))
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             ["one"],
             ["one", "two"],
             ["one", "three", "two"],
             ["four", "one", "three", "two"],
             ["five", "four", "one", "three", "two"],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             ["ONE"],
             ["ONE", "TWO"],
             ["ONE", "THREE", "TWO"],
@@ -1012,14 +1014,14 @@ def test_awkward_map_string_tstring():
         "tree"
     ] as tree:
         keys, values = awkward.unzip(tree["map_string_tstring"].array(library="ak"))
-        assert awkward.to_list(keys) == [
+        assert awkward._v2.to_list(keys) == [
             ["one"],
             ["one", "two"],
             ["one", "three", "two"],
             ["four", "one", "three", "two"],
             ["five", "four", "one", "three", "two"],
         ]
-        assert awkward.to_list(values) == [
+        assert awkward._v2.to_list(values) == [
             ["ONE"],
             ["ONE", "TWO"],
             ["ONE", "THREE", "TWO"],
@@ -1045,7 +1047,7 @@ def test_awkward_map_int_struct():
             '"BDSOutputROOTGeant4Data::ParticleInfo"}]), '
             'parameters={"__array__": "sorted_map"}]'
         )
-        assert awkward.to_list(result[0, "0"]) == [
+        assert awkward._v2.to_list(result[0, "0"]) == [
             -1000020040,
             -1000020030,
             -1000010030,
@@ -1077,7 +1079,7 @@ def test_awkward_map_int_struct():
             1000020030,
             1000020040,
         ]
-        assert awkward.to_list(result[0, "1", "name"]) == [
+        assert awkward._v2.to_list(result[0, "1", "name"]) == [
             "anti_alpha",
             "anti_He3",
             "anti_triton",
@@ -1109,7 +1111,7 @@ def test_awkward_map_int_struct():
             "He3",
             "alpha",
         ]
-        assert awkward.to_list(result[0, "1", "charge"]) == [
+        assert awkward._v2.to_list(result[0, "1", "charge"]) == [
             -2,
             -2,
             -1,
@@ -1141,7 +1143,7 @@ def test_awkward_map_int_struct():
             2,
             2,
         ]
-        assert awkward.to_list(result[0, "1", "mass"]) == [
+        assert awkward._v2.to_list(result[0, "1", "mass"]) == [
             3.727379,
             2.808391,
             2.808921,
@@ -1181,54 +1183,54 @@ def test_awkward_nosplit_file():
         "tree/evt"
     ] as branch:
         result = branch.array(library="ak", entry_stop=5)
-        assert awkward.to_list(result["Beg"]) == [
+        assert awkward._v2.to_list(result["Beg"]) == [
             "beg-000",
             "beg-001",
             "beg-002",
             "beg-003",
             "beg-004",
         ]
-        assert awkward.to_list(result["I16"]) == [0, 1, 2, 3, 4]
-        assert awkward.to_list(result["F32"]) == [0.0, 1.0, 2.0, 3.0, 4.0]
-        assert awkward.to_list(result["Str"]) == [
+        assert awkward._v2.to_list(result["I16"]) == [0, 1, 2, 3, 4]
+        assert awkward._v2.to_list(result["F32"]) == [0.0, 1.0, 2.0, 3.0, 4.0]
+        assert awkward._v2.to_list(result["Str"]) == [
             "evt-000",
             "evt-001",
             "evt-002",
             "evt-003",
             "evt-004",
         ]
-        assert awkward.to_list(result["P3", "Px"]) == [-1, 0, 1, 2, 3]
-        assert awkward.to_list(result["P3", "Py"]) == [0.0, 1.0, 2.0, 3.0, 4.0]
-        assert awkward.to_list(result["P3", "Pz"]) == [-1, 0, 1, 2, 3]
-        assert awkward.to_list(result["ArrayI32"]) == [
+        assert awkward._v2.to_list(result["P3", "Px"]) == [-1, 0, 1, 2, 3]
+        assert awkward._v2.to_list(result["P3", "Py"]) == [0.0, 1.0, 2.0, 3.0, 4.0]
+        assert awkward._v2.to_list(result["P3", "Pz"]) == [-1, 0, 1, 2, 3]
+        assert awkward._v2.to_list(result["ArrayI32"]) == [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
             [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
         ]
-        assert awkward.to_list(result["StdStr"]) == [
+        assert awkward._v2.to_list(result["StdStr"]) == [
             "std-000",
             "std-001",
             "std-002",
             "std-003",
             "std-004",
         ]
-        assert awkward.to_list(result["SliceI64"]) == [
+        assert awkward._v2.to_list(result["SliceI64"]) == [
             [],
             [1],
             [2, 2],
             [3, 3, 3],
             [4, 4, 4, 4],
         ]
-        assert awkward.to_list(result["StlVecStr"]) == [
+        assert awkward._v2.to_list(result["StlVecStr"]) == [
             [],
             ["vec-001"],
             ["vec-002", "vec-002"],
             ["vec-003", "vec-003", "vec-003"],
             ["vec-004", "vec-004", "vec-004", "vec-004"],
         ]
-        assert awkward.to_list(result["End"]) == [
+        assert awkward._v2.to_list(result["End"]) == [
             "end-000",
             "end-001",
             "end-002",
@@ -1279,7 +1281,7 @@ def test_map_string_TVector3():
         "Model/Model.scoringMeshTranslation"
     ] as branch:
         result = branch.array(library="ak")
-        assert awkward.to_list(result["0"]) == [
+        assert awkward._v2.to_list(result["0"]) == [
             [
                 "global_mesh",
                 "mesh_foil1",
@@ -1302,7 +1304,7 @@ def test_map_string_TVector3():
                 "mesh_t7",
             ]
         ]
-        assert awkward.to_list(result["1"]) == [
+        assert awkward._v2.to_list(result["1"]) == [
             [
                 {"fX": 0.0, "fY": 0.0, "fZ": 0.074},
                 {"fX": 0.0, "fY": 0.04, "fZ": 0.048509515},
@@ -1332,24 +1334,24 @@ def test_gohep_output_file():
     with uproot.open(skhep_testdata.data_path("uproot-issue413.root"))[
         "mytree"
     ] as tree:
-        assert awkward.to_list(tree["I32"].array()) == [0, 1, 2, 3, 4]
-        assert awkward.to_list(tree["F64"].array()) == [0.0, 1.0, 2.0, 3.0, 4.0]
-        assert awkward.to_list(tree["Str"].array()) == [
+        assert awkward._v2.to_list(tree["I32"].array()) == [0, 1, 2, 3, 4]
+        assert awkward._v2.to_list(tree["F64"].array()) == [0.0, 1.0, 2.0, 3.0, 4.0]
+        assert awkward._v2.to_list(tree["Str"].array()) == [
             "evt-0",
             "evt-1",
             "evt-2",
             "evt-3",
             "evt-4",
         ]
-        assert awkward.to_list(tree["ArrF64"].array()) == [
+        assert awkward._v2.to_list(tree["ArrF64"].array()) == [
             [0.0, 1.0, 2.0, 3.0, 4.0],
             [1.0, 2.0, 3.0, 4.0, 5.0],
             [2.0, 3.0, 4.0, 5.0, 6.0],
             [3.0, 4.0, 5.0, 6.0, 7.0],
             [4.0, 5.0, 6.0, 7.0, 8.0],
         ]
-        assert awkward.to_list(tree["N"].array()) == [0, 1, 2, 3, 4]
-        assert awkward.to_list(tree["SliF64"].array()) == [
+        assert awkward._v2.to_list(tree["N"].array()) == [0, 1, 2, 3, 4]
+        assert awkward._v2.to_list(tree["SliF64"].array()) == [
             [],
             [1.0],
             [2.0, 3.0],
